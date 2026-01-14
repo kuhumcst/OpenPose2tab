@@ -1,0 +1,419 @@
+{jsn2tab.bra
+𝕌𝕋𝔽-𝟠
+
+Read all OpenPose json files and create single tab separated file for pose_keypoints_2d for single person}
+
+X=
+  (Root=FinalDataset)
+  (meetings=20220916)
+  ( fixed
+  =   a b m n k x y zs
+    .     @(!arg:?a "/" [?m ?b [?n)
+        & !m+-1*!n:?k
+        & (   @(!a:?x [!k ?y)
+            & str$((!x:~|0) "." !y)
+          |   0:?zs
+            &   whl
+              ' ( !k+1:?k
+                & @(!a:~(? [!k ?))
+                & 0 !zs:?zs
+                )
+            & str$("0." !zs !a)
+          )
+      | !arg
+  )
+  ( winsep
+  =   a b
+    .       map
+          $ ( ( 
+              =   
+                .     whl
+                    ' ( @(!arg:?a "/" ?b)
+                      & str$(!a "\\" !b):?arg
+                      )
+                  & "\\" !arg
+              )
+            . !arg
+            )
+        : "\\" ?arg
+      & str$!arg
+  )
+  ( direxists
+  =   dirtxt
+    .   str$("dir /AD /B " !arg " > dirtxt"):?command
+      & sys$!command:0
+      & get$(dirtxt,STR):?dirtxt
+      & @(!dirtxt:~(? "File Not Found" ?))
+  )
+  ( ensuredirexists
+  =   dirtxt
+    .   (its.direxists)$!arg
+      |   out$("jsn2tab.bra: " !arg "will be created")
+        & sys$(str$("mkdir " !arg))
+  )
+  ( hasJSON
+  =   command
+    .   (its.winsep)$(!(its.Root) !arg):?arg
+      & str$("dir /B /ON " !arg " > JSONfolder"):?command
+      & sys$!command:0
+      & get$(JSONfolder,STR):?JSONfolder
+      & @(!JSONfolder:? "keypoints.json" ?)
+      & !arg
+  )
+  ( findKeyPointsFolderJSN
+  =   dirtxt foldr
+    .   (its.hasJSON)$!arg
+      |   !arg:?foldr
+        &   sys
+          $ ( str
+            $ ( "dir /AD /B "
+                (its.winsep)$(!(its.Root) !foldr)
+                " > dirtxt"
+              )
+            )
+        &   vap
+          $ ( ( 
+              =   subfoldr
+                .   (@(!arg:?arg \r)|)
+                  & ( !arg:
+                    |   str$(!foldr "\\" !arg):?subfoldr
+                      & ( (its.findKeyPointsFolderJSN)$!subfoldr
+                        | 
+                        )
+                    )
+              )
+            . get$(dirtxt,STR)
+            . \n
+            )
+  )
+  ( emptyline
+  =   
+    .   str
+      $ ( \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \t
+          "-"
+          \n
+        )
+  )
+  ( headerline
+  =   
+    .   str
+      $ ( Frame
+          \t
+          Nose
+          \t\t\t
+          Neck
+          \t\t\t
+          RShoulder
+          \t\t\t
+          RElbow
+          \t\t\t
+          RWrist
+          \t\t\t
+          LShoulder
+          \t\t\t
+          LElbow
+          \t\t\t
+          LWrist
+          \t\t\t
+          MidHip
+          \t\t\t
+          RHip
+          \t\t\t
+          RKnee
+          \t\t\t
+          RAnkle
+          \t\t\t
+          LHip
+          \t\t\t
+          LKnee
+          \t\t\t
+          LAnkle
+          \t\t\t
+          REye
+          \t\t\t
+          LEye
+          \t\t\t
+          REar
+          \t\t\t
+          LEar
+          \t\t\t
+          LBigToe
+          \t\t\t
+          LSmallToe
+          \t\t\t
+          LHeel
+          \t\t\t
+          RBigToe
+          \t\t\t
+          RSmallToe
+          \t\t\t
+          RHeel
+          \t\t\n
+        )
+  )
+  ( json2tab
+  =   outputkeypoints folder header empty,NN nums
+    .   !arg:(?outputkeypoints.?folder)
+      & (its.emptyline)$:?empty
+      & (its.headerline)$:?header
+      & out$("jsn2tab.bra: creating" !outputkeypoints)
+      &   sys
+        $ ( str
+          $ ("dir /B /ON \"" (its.winsep)$!folder "\" > dir.txt")
+          )
+      & get$("dir.txt",STR):?dir
+      & put$(!header,!outputkeypoints,NEW)
+      & -1:?NN
+      &     vap
+          $ ( ( 
+              =   a b
+                .   @(!arg:?arg \r)
+                  & 1+!NN:?NN
+                  & (   mod$(!NN,1000):0
+                      & put$(str$(!NN \r))
+                    | 
+                    )
+                  &   !NN
+                      (     get$(str$(!folder "\\" !arg),JSN)
+                          : (   ?
+                              + ( people
+                                .   
+                                  ,   ?
+                                    + ("pose_keypoints_2d".,?nums)
+                                    + ?
+                                  , 
+                                )
+                              + ?
+                            , 
+                            )
+                        &     map
+                            $ ( (=.\t (its.fixed)$!arg)
+                              . !nums
+                              )
+                            \n
+                      | !empty
+                      )
+              )
+            . !dir
+            . \n
+            )
+        : ?L
+      & put$(str$!L,!outputkeypoints,APP)
+      & out$("jsn2tab.bra: " str$(!outputkeypoints " written"))
+  )
+  ( doit
+  =   
+    .   !arg:(?Root.?meetings)
+      & out$("jsn2tab.bra: meetings" !meetings)
+      &   (its.findKeyPointsFolderJSN)$!meetings
+        : ?keypointfolders
+      & out$("jsn2tab.bra: keypointfolders" !keypointfolders)
+      &   map
+        $ ( ( 
+            =   
+              .   !arg:?keypointfolder
+                &   (   @( rev$!keypointfolder
+                         : ?tuptuo ("\\"|"/") ?
+                         )
+                      & rev$!tuptuo
+                    | !keypointfolder
+                    )
+                  : ?output
+                &   str$("keypoints.tab\\" !yyyymmdd "\\")
+                  : ?keypointsfolder
+                & (its.ensuredirexists)$!keypointsfolder
+                &   str$(!keypointsfolder !output ".tab")
+                  : ?outputkeypoints
+                & (its.json2tab)$(!outputkeypoints.!keypointfolder)
+            )
+          . !keypointfolders
+          )
+  )
+  ( new
+  =   X r v a j t0 t1,vaj yyyymmdd
+    .   ~
+      |   out$"jsn2tab.bra"
+        & (   arg$:?Root
+            & arg$:?yyyymmdd
+            & out$(yyyymmdd !yyyymmdd)
+            & out$("jsn2tab.bra: Root" !Root yyyymmdd !yyyymmdd)
+            & !Root:?(its.Root)
+            & !yyyymmdd:?(its.meetings)
+          | 
+          )
+        & -1*clk$:?t0
+        & (its.doit)$(!(its.Root).!(its.meetings))
+        & clk$:?t1
+        & out$(str$(flt$(!t1+!t0,3) " s"))
+  );
+
+r=
+  get'("jsn2tab.bra",TXT)
+& rmv$(str$(jsn2tab ".bak"))
+& ren$("jsn2tab.bra".str$(jsn2tab ".bak"))
+&   put
+  $ ( "{jsn2tab.bra
+𝕌𝕋𝔽-𝟠
+
+Read all OpenPose json files and create single tab separated file for pose_keypoints_2d for single person}
+
+"
+    , "jsn2tab.bra"
+    , NEW
+    , BIN
+    )
+& lst'(X,"jsn2tab.bra",APP)
+& put'(\n,"jsn2tab.bra",APP,BIN)
+& lst'(r,"jsn2tab.bra",APP)
+& put$(str$("\nnew'" X ";\n"),"jsn2tab.bra",APP,BIN)
+& ;
+
+new'X;
